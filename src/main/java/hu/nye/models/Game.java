@@ -1,5 +1,6 @@
 package hu.nye.models;
 
+import hu.nye.ai.MinimaxAI;
 import hu.nye.highscore.HighscoreDatabase;
 
 import java.io.File;
@@ -8,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
@@ -20,6 +20,7 @@ public class Game {
     private String saveFile;
 
     private final HighscoreDatabase highscoreDatabase;
+    private final MinimaxAI ai;
 
     public Game(int row, int col, String name, boolean save, String saveFile) {
         this.board = new GameBoard(row, col);
@@ -29,6 +30,7 @@ public class Game {
         this.saveGame = save;
         this.saveFile = saveFile;
         this.highscoreDatabase = new HighscoreDatabase();
+        this.ai = new MinimaxAI('O', 'X', 6);
     }
 
     public Game(String name, String filename, boolean save, String saveFile) {
@@ -39,11 +41,11 @@ public class Game {
         this.saveGame = save;
         this.saveFile = saveFile;
         this.highscoreDatabase = new HighscoreDatabase();
+        this.ai = new MinimaxAI('O', 'X', 6);
     }
 
     /**
      * Elinditja és kezeli a játékmenetet
-     * A játékosok felváltva tesznek lépéseket, amíg a valamelyik nem nyer vagy a játék véget nem ér
      */
     public void start() {
         Scanner scanner = new Scanner(System.in);
@@ -69,8 +71,9 @@ public class Game {
                         scanner.next();
                     }
                 } else {
-                    column = new Random().nextInt(this.board.getColumns());
-                    System.out.println("Opponent chooses column " + (column + 1));
+                    // Minimax AI választja a legjobb oszlopot alfa-béta vágással
+                    column = this.ai.getBestColumn(this.board) + 1;
+                    System.out.println("Opponent chooses column " + column);
                 }
 
                 if (this.board.placeDisc(column, this.currentPlayer.getDisc())) {
@@ -94,22 +97,11 @@ public class Game {
         scanner.close();
     }
 
-    /**
-     * Átváltja az aktuális játékost
-     */
     public void switchPlayer() {
         this.currentPlayer = (this.currentPlayer == this.player1) ? this.player2 : this.player1;
     }
 
-    /**
-     * Bekéri és érvényesíti a játék méreteit (sorok vagy oszlopok száma) a felhasználótól.
-     *
-     * @param sc             A {@link Scanner} objektum a felhasználói bemenet olvasásához.
-     * @param dimensionName  A méret típusa, például "sorok" vagy "oszlopok".
-     * @param min            A méret minimális értéke.
-     * @param max            A méret maximális értéke.
-     * @return               A felhasználó által megadott érvényes méret.
-     */
+
     public static int getValidDimension(Scanner sc, String dimensionName, int min, int max) {
         int dimension;
         StringBuilder messageBuilder = new StringBuilder();
@@ -139,12 +131,6 @@ public class Game {
         return dimension;
     }
 
-    /**
-     * Egy játéktábla betöltése egy megadott fájlból.
-     *
-     * @param filename A fájl neve, amelyből a táblát be kell tölteni.
-     * @return A betöltött játéktábla, vagy null, ha a betöltés sikertelen.
-     */
     public GameBoard loadFromFile(String filename) {
         File file = new File(filename);
         if (!file.exists()) {
@@ -167,11 +153,6 @@ public class Game {
         }
     }
 
-    /**
-     * A játéktábla aktuális állapotának mentése egy megadott fájlba.
-     *
-     * @param filename A fájl neve, amelybe a táblát menteni kell.
-     */
     public void saveBoardToFile(String filename) {
         try {
             Files.write(Paths.get(filename), this.saveBoardToString().getBytes());
@@ -181,11 +162,6 @@ public class Game {
         }
     }
 
-    /**
-     * A játéktábla állapotának szöveges reprezentációját adja vissza.
-     *
-     * @return A játéktábla szöveges formában.
-     */
     public String saveBoardToString() {
         StringBuilder sb = new StringBuilder();
         for (char[] row : this.getBoard().getBoard()) {
@@ -197,9 +173,7 @@ public class Game {
         return sb.toString();
     }
 
-    /**
-     * Kinyomtatja a jelenlegi legjobb eredményeket.
-     */
+
     public void printHighscore() {
         this.highscoreDatabase.printHighscore();
     }

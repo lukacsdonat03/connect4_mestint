@@ -16,12 +16,7 @@ public class GameBoard {
         }
     }
 
-    /**
-     *
-     * @param column    Az adott oszlop sorszáma
-     * @param disc      A korong jelzése
-     * @return          Elhelyezi az adott korongot validálás után, validásál eredményétől függően visszatér true/false-al
-     */
+
     public boolean placeDisc(int column, char disc){
         //validálás
         if(column-1<0 || column-1 >= this.columns){
@@ -38,11 +33,7 @@ public class GameBoard {
         return false;
     }
 
-    /**
-     *
-     * @param disc      Aktuálisan lerakott korong
-     * @return          Leellenőrzi, hogy az adott lépés után  nyert-e a játékos és ennek megfelelően true/false-al tér vissza
-     */
+
     public boolean checkWin(char disc){
 
         for(int row = 0; row < this.rows; row++){
@@ -60,15 +51,7 @@ public class GameBoard {
     }
 
     /**
-     * Segítő metódus, ellenőrzi, hogy egy adott irányban négy egymást követő korong megegyezik-e a megadott típussal.
-     *
-     * @param row   A kiinduló pozíció sora.
-     * @param col   A kiinduló pozíció oszlopa.
-     * @param dRow  Az irány sora mentén való elmozdulásának értéke.
-     * @param dCol  Az irány oszlopa mentén való elmozdulásának értéke.
-     * @param disc  Az ellenőrizendő korong típusa.
-     * @return      true, ha az adott irányban négy egymást követő korong megegyezik;
-     *              különben false.
+     * helper metódus, ellenőrzi, hogy egy adott irányban négy egymást követő korong megegyezik-e a megadott típussal.
      */
     private boolean checkDirection(int row, int col, int dRow, int dCol, char disc) {
         int count = 0;
@@ -84,9 +67,6 @@ public class GameBoard {
         return count == 4;
     }
 
-    /**
-     * Kiírja az aktuális játéktáblát
-     */
     public void printBoard() {
         for (char[] row : this.board) {
             for (char cell : row) {
@@ -97,16 +77,48 @@ public class GameBoard {
         System.out.println();
     }
 
-    /**
-     *  Betölt egy pályát egy karakter mátrixból
-     * @param matrix Egy adott pálya
-     */
     public void loadGameboard(char[][] matrix){
         for(int i = 0;i<matrix.length; i++){
             for(int j = 0; j< matrix[i].length; j++){
                 this.board[i][j] = matrix[i][j];
             }
         }
+    }
+
+    /**
+     * Eltávolítja a legfelső korongot az adott oszlopból.
+     * A minimax algoritmus használja a lépések visszavonásához.
+     */
+    public boolean removeDisc(int column) {
+        if (column - 1 < 0 || column - 1 >= this.columns) {
+            return false;
+        }
+
+        for (int row = 0; row < this.rows; row++) {
+            if (this.board[row][column - 1] != '-') {
+                this.board[row][column - 1] = '-';
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public boolean isColumnFull(int column) {
+        if (column < 0 || column >= this.columns) {
+            return true;
+        }
+        return this.board[0][column] != '-';
+    }
+
+    public boolean isFull() {
+        for (int col = 0; col < this.columns; col++) {
+            if (this.board[0][col] == '-') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public char[][] getBoard() {

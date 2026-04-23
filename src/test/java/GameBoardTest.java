@@ -93,4 +93,58 @@ class GameBoardTest {
         assertArrayEquals(matrix, gameBoard.getBoard(), "Game board should match the loaded matrix.");
         assertTrue(gameBoard.checkWin('X'), "Loaded board should detect a vertical win for 'X'.");
     }
+
+    @Test
+    void testRemoveDiscValid() {
+        gameBoard.placeDisc(1, 'X');
+        gameBoard.placeDisc(1, 'O');
+        assertTrue(gameBoard.removeDisc(1), "Removing a disc from a non-empty column should succeed.");
+        assertEquals('-', gameBoard.getBoard()[4][0], "The topmost disc should be removed.");
+        assertEquals('X', gameBoard.getBoard()[5][0], "The bottom disc should remain.");
+    }
+
+    @Test
+    void testRemoveDiscEmptyColumn() {
+        assertFalse(gameBoard.removeDisc(1), "Removing a disc from an empty column should fail.");
+    }
+
+    @Test
+    void testRemoveDiscInvalidColumn() {
+        assertFalse(gameBoard.removeDisc(0), "Removing from column 0 should fail.");
+        assertFalse(gameBoard.removeDisc(8), "Removing from column 8 should fail.");
+    }
+
+    @Test
+    void testIsColumnFullFalse() {
+        assertFalse(gameBoard.isColumnFull(0), "Empty column should not be full.");
+    }
+
+    @Test
+    void testIsColumnFullTrue() {
+        for (int i = 0; i < 6; i++) {
+            gameBoard.placeDisc(1, 'X');
+        }
+        assertTrue(gameBoard.isColumnFull(0), "Column with 6 discs should be full.");
+    }
+
+    @Test
+    void testIsColumnFullInvalid() {
+        assertTrue(gameBoard.isColumnFull(-1), "Invalid column returns true (treated as full).");
+        assertTrue(gameBoard.isColumnFull(7), "Invalid column returns true (treated as full).");
+    }
+
+    @Test
+    void testIsFullFalse() {
+        assertFalse(gameBoard.isFull(), "Empty board should not be full.");
+    }
+
+    @Test
+    void testIsFullTrue() {
+        for (int col = 1; col <= 7; col++) {
+            for (int row = 0; row < 6; row++) {
+                gameBoard.placeDisc(col, 'X');
+            }
+        }
+        assertTrue(gameBoard.isFull(), "Board with all cells filled should be full.");
+    }
 }

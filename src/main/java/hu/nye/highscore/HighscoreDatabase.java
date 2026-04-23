@@ -25,12 +25,7 @@ public class HighscoreDatabase {
         }
     }
 
-    /**
-     * Létrehozza egy játékos nevét az adatbázishoz, vagy frissíti a győzelmeinek számát, ha már létezik.
-     *
-     * @param playerName A játékos neve, akinek az eredményét hozzá kell adni vagy frissíteni kell.
-     */
-    public void createOrUpadteHighscore(String playerName){
+       public void createOrUpadteHighscore(String playerName){
         String checkSql = "SELECT wins FROM highscores WHERE player_name = ?";
         String updateSql = "UPDATE highscores SET wins = wins+1 where player_name = ?";
         String insertSql = "INSERT INTO highscores(player_name, wins) VALUES (?,1)";
@@ -40,7 +35,6 @@ public class HighscoreDatabase {
              PreparedStatement updateStmt = conn.prepareStatement(updateSql);
              PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
 
-            // Check if the player already exists
             checkStmt.setString(1, playerName);
             ResultSet rs = checkStmt.executeQuery();
 
@@ -59,11 +53,6 @@ public class HighscoreDatabase {
         }
     }
 
-    /**
-     * Kilistázza a ranglistát az adatbázisból a győzelmek száma alapján csökkenő sorrendben.
-     *
-     * A ranglista tartalmazza a játékos nevét és a győzelmeinek számát.
-     */
     public void printHighscore(){
         String query = "SELECT player_name, wins FROM highscores ORDER BY wins DESC";
         try (Connection conn = DriverManager.getConnection(this.getDatabaseUrl());
