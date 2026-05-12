@@ -24,7 +24,7 @@ public class GameBoardHelper {
     }
 
     /**
-     * Mély másolatot készít a játéktábláról.
+     * Másolatot készít a játéktábláról.
      * Azért szükséges, mert a minimax algoritmus szimulált lépéseket végez,
      * és nem szeretnénk az eredeti táblát módosítani.
      */

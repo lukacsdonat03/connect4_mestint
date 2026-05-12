@@ -14,6 +14,10 @@ public class MinimaxAI {
     private final int maxDepth;
     private final HeuristicEvaluator evaluator;
 
+    // Nagy érték a nyerés/vesztés jelöléséhez
+    private static final int SCORE_WIN = 1000000;
+    private static final int SCORE_LOSS = -1000000;
+
     /**
      * Létrehozza az AI-t a megadott paraméterekkel.
      *
@@ -30,11 +34,10 @@ public class MinimaxAI {
 
     /**
      * Meghatározza a legjobb oszlopot az AI számára a jelenlegi táblaállapot alapján.
-     * Ez a publikus belépési pont — meghívja a minimax algoritmust az összes lehetséges lépésre,
-     * és visszaadja a legmagasabb pontszámú oszlopot.
+     * Visszaadja a legmagasabb pontszámú oszlopot.
      *
      * @param board A jelenlegi játéktábla.
-     * @return A legjobb oszlop indexe (0-indexelt).
+     * @return A legjobb oszlop indexe.
      */
     public int getBestColumn(GameBoard board) {
         List<Integer> availableColumns = GameBoardHelper.getAvailableColumns(board);
@@ -141,7 +144,5 @@ public class MinimaxAI {
         }
     }
 
-    // Nagy pozitív/negatív érték a nyerés/vesztés jelöléséhez
-    private static final int SCORE_WIN = 1000000;
-    private static final int SCORE_LOSS = -1000000;
+
 }

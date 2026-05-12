@@ -30,7 +30,7 @@ public class HeuristicEvaluator {
      * Kiértékeli a teljes játéktáblát az AI szemszögéből.
      * Magasabb érték = jobb pozíció az AI-nak.
      *
-     * @return A tábla heurisztikus értéke (int).
+     * @return A tábla heurisztikus értéke.
      */
     public int evaluate(GameBoard board) {
         int score = 0;
@@ -38,10 +38,10 @@ public class HeuristicEvaluator {
         int rows = board.getRows();
         int cols = board.getColumns();
 
-        // 1) Középső oszlop bónusz
+        // 1 Középső oszlop bónusz
         score += evaluateCenterColumn(grid, rows, cols);
 
-        // 2) Minden 4-es ablak kiértékelése mind a 4 irányban
+        // 2 Minden 4-es ablak kiértékelése mind a 4 irányban
         score += evaluateAllWindows(grid, rows, cols);
 
         return score;
